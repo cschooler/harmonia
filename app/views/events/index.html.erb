@@ -1,1 +1,18 @@
 <h1>This is the events home page</h1>
+<table>
+<% @events.each do | event |%>
+	<%= event.name %>
+	<tr>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Time</th>
+		<th>Link</th>
+	</tr>
+	<tr>
+		<td><%= event.name %></td>
+		<td><%= event.description %></td>
+		<td><%= event.time %></td>
+		<td><%= link_to "Go", :controller => "events", :action => "show", :id => event %></td>
+	</tr>
+<% end%>
+</table>
