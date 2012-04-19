@@ -19,6 +19,7 @@ body {
 	-webkit-box-shadow:2px 2px 10px #CCC;
 	-moz-box-shadow:2px 2px 10px #CCC;
 	box-shadow:2px 2px 10px #CCC;
+	text-decoration:none;
 }
 
 #branding {
