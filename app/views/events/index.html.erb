@@ -1,18 +1,12 @@
 <h1>This is the events home page</h1>
 <%= link_to "New", :controller => "events", :action => "new" %>
-<table>
+
+<ul class="events">
 <% @events.each do | event |%>
-	<tr>
-		<th>Name</th>
-		<th>Description</th>
-		<th>Time</th>
-		<th>Link</th>
-	</tr>
-	<tr>
-		<td><%= event.name %></td>
-		<td><%= event.description %></td>
-		<td><%= event.time %></td>
-		<td><%= link_to "Go", :controller => "events", :action => "show", :id => event %></td>
-	</tr>
+<li class="event">
+	<h2><%= link_to event.name, {:controller => "events", :action => "show", :id => event}, :class => 'title' %></h2>
+	<span><%= event.time %></span>
+	<p><%= event.description %></p>
+</li>
 <% end%>
-</table>
+</ul>

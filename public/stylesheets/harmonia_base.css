@@ -33,3 +33,28 @@ body {
 	margin:0;
 	font-family:Cambria;  /* update me */
 }
+
+.events {
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+
+.event {
+	border:1px solid #E0E0E0;
+	margin:1em;
+	padding-top:0;
+}
+
+.event h2 {
+	margin:0;
+	padding:0;
+}
+
+.event .title {
+	display:block;
+	text-decoration:none;
+	background-color:#F0F0F0;
+	margin:0;
+	padding:.25em;
+}
