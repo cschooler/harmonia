@@ -1,7 +1,7 @@
 <h1>This is the events home page</h1>
+<%= link_to "New", :controller => "events", :action => "new" %>
 <table>
 <% @events.each do | event |%>
-	<%= event.name %>
 	<tr>
 		<th>Name</th>
 		<th>Description</th>
