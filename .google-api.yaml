@@ -1,0 +1,7 @@
+---
+mechanism: oauth_2
+scope: https://www.googleapis.com/auth/calendar
+client_id: 856077115732-3h764b0aba6c25smennmfa502knp4qf0.apps.googleusercontent.com
+client_secret: nj41fqdhsBHcLStA_kznNgsq
+access_token: ya29.AHES6ZQumQPg2CGSjIXunHfDipP-XZy3-S2GFCchifZ8TZp_1F9kcw
+refresh_token: 1/tXizqADTYIvtdBCVRWakx5JF5dhjIKoCvc37BzLRaWg
