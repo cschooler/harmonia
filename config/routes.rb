@@ -1,7 +1,10 @@
 Harmonia::Application.routes.draw do
   resources :events
+  resources :gcal
   
   root :to => 'events#index'
+  
+  get "gcal/index"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
