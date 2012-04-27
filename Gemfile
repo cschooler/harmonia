@@ -7,6 +7,7 @@ gem 'rails'
 
 gem 'sqlite3'
 gem 'google-api-client'
+gem 'ruby-openid'
 
 # Use unicorn as the web server
 # gem 'unicorn'

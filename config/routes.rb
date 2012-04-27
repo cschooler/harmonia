@@ -1,10 +1,11 @@
 Harmonia::Application.routes.draw do
   resources :events
-  resources :gcal
+
+  match "consumer/index" => "consumer#index"
+  match "consumer/start" => "consumer#start"
+  match "consumer/complete" => "consumer#complete"
   
   root :to => 'events#index'
-  
-  get "gcal/index"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
