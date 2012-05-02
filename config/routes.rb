@@ -7,6 +7,7 @@ Harmonia::Application.routes.draw do
   match "openid/new" => "openid#new"
   match "openid/create" => "openid#create"
   match "openid/complete" => "openid#complete"
+  match "openid/index" => "openid#new"
   
   root :to => 'events#index'
   # The priority is based upon order of creation:

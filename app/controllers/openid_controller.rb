@@ -25,35 +25,24 @@ class OpenidController < ApplicationController
 		  redirect_to :action => 'index'
 		  return
 		end
-		fetchRequest = OpenID::AX::FetchRequest.new
+		fetch_request = OpenID::AX::FetchRequest.new
 		
-		first_name_attribute = OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/first')
-		fetchRequest.add(first_name_attribute)
-		oidreq.add_extension(fetchRequest)
-		if params[:use_sreg]
-		  sregreq = OpenID::SReg::Request.new
-		  # required fields
-		  sregreq.request_fields(['email','nickname'], true)
-		  # optional fields
-		  sregreq.request_fields(['dob', 'fullname'], true)
-		  oidreq.add_extension(sregreq)
-		  oidreq.return_to_args['did_sreg'] = 'y'
-		end
-		if params[:use_pape]
-		  papereq = OpenID::PAPE::Request.new
-		  papereq.add_policy_uri(OpenID::PAPE::AUTH_PHISHING_RESISTANT)
-		  papereq.max_auth_age = 2*60*60
-		  oidreq.add_extension(papereq)
-		  oidreq.return_to_args['did_pape'] = 'y'
-		end
-		if params[:force_post]
-		  oidreq.return_to_args['force_post']='x'*2048
-		end
+		fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/first', 'first', true))
+    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/last', 'last', true))
+    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/contact/email', 'email', true))
+    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/friendly', 'friendly', true))
+    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson', 'namePerson', true))
+    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/person/gender', 'gender', true))
+    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/pref/language', 'language', true))
+    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/pref/timezone', 'timezone', true))
+    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/media/image/default', 'image', true))
+		oidreq.add_extension(fetch_request)
+		
 		return_to = url_for :action => 'complete', :only_path => false
-		realm = url_for :action => 'new', :id => nil, :only_path => false
+		realm = url_for root_url
 		
-		if oidreq.send_redirect?("http://localhost:3000", "http://localhost:3000/openid/complete", params[:immediate])
-		  redirect_to oidreq.redirect_url("http://localhost:3000", "http://localhost:3000/openid/complete", params[:immediate])
+		if oidreq.send_redirect?(realm, return_to, params[:immediate])
+		  redirect_to oidreq.redirect_url(realm, return_to, params[:immediate])
 		else
 		  render :text => oidreq.html_markup(realm, return_to, params[:immediate], {'id' => 'openid_form'})
 		end
@@ -78,40 +67,12 @@ class OpenidController < ApplicationController
       flash[:success] = ("Verification of #{oidresp.display_identifier}"\
                          " succeeded.")
 	  fetch_response = OpenID::AX::FetchResponse.from_success_response(oidresp)
+    sreg_message = ''
 	  fetch_response.data.each {|k,v|
 			sreg_message << "<br/><b>#{k}</b>: #{v}"
       }
       flash[:sreg_results] = sreg_message
           
-      if params[:did_sreg]
-        sreg_resp = OpenID::SReg::Response.from_success_response(oidresp)
-        sreg_message = "Simple Registration data was requested"
-        if sreg_resp.empty?
-          sreg_message << ", but none was returned."
-        else
-          sreg_message << ". The following data were sent:"
-          sreg_resp.data.each {|k,v|
-            sreg_message << "<br/><b>#{k}</b>: #{v}"
-          }
-        end
-        flash[:sreg_results] = sreg_message
-      end
-      if params[:did_pape]
-        pape_resp = OpenID::PAPE::Response.from_success_response(oidresp)
-        pape_message = "A phishing resistant authentication method was requested"
-        if pape_resp.auth_policies.member? OpenID::PAPE::AUTH_PHISHING_RESISTANT
-          pape_message << ", and the server reported one."
-        else
-          pape_message << ", but the server did not report one."
-        end
-        if pape_resp.auth_time
-          pape_message << "<br><b>Authentication time:</b> #{pape_resp.auth_time} seconds"
-        end
-        if pape_resp.nist_auth_level
-          pape_message << "<br><b>NIST Auth Level:</b> #{pape_resp.nist_auth_level}"
-        end
-        flash[:pape_results] = pape_message
-      end
     when OpenID::Consumer::SETUP_NEEDED
       flash[:alert] = "Immediate request failed - Setup Needed"
     when OpenID::Consumer::CANCEL
