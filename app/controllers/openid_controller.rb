@@ -3,6 +3,7 @@ require 'pathname'
 require "openid"
 require 'openid/extensions/sreg'
 require 'openid/extensions/pape'
+require 'openid/extensions/ax'
 require 'openid/store/filesystem'
 
 class OpenidController < ApplicationController
@@ -24,12 +25,17 @@ class OpenidController < ApplicationController
 		  redirect_to :action => 'index'
 		  return
 		end
+		fetchRequest = OpenID::AX::FetchRequest.new
+		
+		first_name_attribute = OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/first')
+		fetchRequest.add(first_name_attribute)
+		oidreq.add_extension(fetchRequest)
 		if params[:use_sreg]
 		  sregreq = OpenID::SReg::Request.new
 		  # required fields
 		  sregreq.request_fields(['email','nickname'], true)
 		  # optional fields
-		  sregreq.request_fields(['dob', 'fullname'], false)
+		  sregreq.request_fields(['dob', 'fullname'], true)
 		  oidreq.add_extension(sregreq)
 		  oidreq.return_to_args['did_sreg'] = 'y'
 		end
@@ -71,6 +77,12 @@ class OpenidController < ApplicationController
     when OpenID::Consumer::SUCCESS
       flash[:success] = ("Verification of #{oidresp.display_identifier}"\
                          " succeeded.")
+	  fetch_response = OpenID::AX::FetchResponse.from_success_response(oidresp)
+	  fetch_response.data.each {|k,v|
+			sreg_message << "<br/><b>#{k}</b>: #{v}"
+      }
+      flash[:sreg_results] = sreg_message
+          
       if params[:did_sreg]
         sreg_resp = OpenID::SReg::Response.from_success_response(oidresp)
         sreg_message = "Simple Registration data was requested"
