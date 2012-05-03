@@ -4,7 +4,7 @@ require "openid"
 require 'openid/extensions/sreg'
 require 'openid/extensions/pape'
 require 'openid/extensions/ax'
-require 'openid/store/filesystem'
+require 'openid/store/memory'
 
 class OpenidController < ApplicationController
 	def new
@@ -85,8 +85,7 @@ class OpenidController < ApplicationController
 	protected
 		def openid_consumer
     		if @openid_consumer.nil?
-		      	dir = Pathname.new(RAILS_ROOT).join('db').join('cstore')
-      			store = OpenID::Store::Filesystem.new(dir)
+      			store = OpenID::Store::Memory.new
       			@openid_consumer = OpenID::Consumer.new(session, store)
     		end
     		return @openid_consumer
