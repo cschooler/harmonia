@@ -6,7 +6,7 @@
 		<%= stylesheet_link_tag 'harmonia_base', :media => 'screen' %>
 	</head>
 	<body>
-		<%= link_to "Logo Here", {:controller => "events", :action => "index"}, :id => 'site_logo' %>
+		<%= link_to "Logo Here", {:controller => "openid", :action => "index"}, :id => 'site_logo' %>
 		<h1 id="branding">Kauffman Center for the Performing Arts</h1>
 		<div>
 			<% flash.each do |key, value| %>

@@ -4,12 +4,12 @@ Harmonia::Application.routes.draw do
   match "consumer/index" => "consumer#index"
   match "consumer/start" => "consumer#start"
   match "consumer/complete" => "consumer#complete"
-  match "openid/new" => "openid#new"
+  match "openid/view" => "openid#view"
   match "openid/create" => "openid#create"
   match "openid/complete" => "openid#complete"
-  match "openid/index" => "openid#new"
+  match "openid/index" => "openid#index"
   
-  root :to => 'events#index'
+  root :to => 'openid#index'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

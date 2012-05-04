@@ -7,7 +7,10 @@ require 'openid/extensions/ax'
 require 'openid/store/memory'
 
 class OpenidController < ApplicationController
-	def new
+	def index
+	end
+
+	def view
 		#TODO: show a form requesting the user's OpenID
 	end
 	
@@ -79,7 +82,7 @@ class OpenidController < ApplicationController
       flash[:alert] = "OpenID transaction cancelled."
     else
     end
-    redirect_to :action => 'new'
+    redirect_to :action => 'view'
   end
 	
 	protected
