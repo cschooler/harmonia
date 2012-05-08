@@ -3,8 +3,19 @@
 <ul class="users">
 <% @users.each do | user |%>
 <li class="user">
-	<%= link_to 'Go', {:controller => "users", :action => "show", :id => user}, :class => 'title' %>
-	<span><%= user.last_name %>, <%= user.first_name %></span>: <div><%= user.email %></div><div><%= user.aliases[0].alias %></div>
+	<%= link_to user.last_name + ', ' + user.first_name, {:controller => "users", :action => "show", :id => user}, :class => 'title' %>
+	<dl>
+		<dt class="email_label">Emal:</dt>
+		<dd class="email"><%= user.email %></dd>
+		<dt>Aliases</dt>
+		<dd>
+			<ul class="aliases">
+				<% user.aliases.each do | userAlias |%>
+				<%= userAlias.alias %>
+				<% end %>
+			</ul>
+		</dd>
+	</dl>
 </li>
 <% end%>
 </ul>

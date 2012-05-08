@@ -4,7 +4,7 @@ require "openid"
 require 'openid/extensions/sreg'
 require 'openid/extensions/pape'
 require 'openid/extensions/ax'
-require 'openid/store/memory'
+require 'openid/store/filesystem'
 
 class OpenidController < ApplicationController
 	def index
@@ -31,14 +31,8 @@ class OpenidController < ApplicationController
 		fetch_request = OpenID::AX::FetchRequest.new
 		
 		fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/first', 'first', true))
-    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/last', 'last', true))
-    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/contact/email', 'email', true))
-    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/friendly', 'friendly', true))
-    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson', 'namePerson', true))
-    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/person/gender', 'gender', true))
-    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/pref/language', 'language', true))
-    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/pref/timezone', 'timezone', true))
-    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/media/image/default', 'image', true))
+    	fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/last', 'last', true))
+    	fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/contact/email', 'email', true))
 		oidreq.add_extension(fetch_request)
 		
 		return_to = url_for :action => 'complete', :only_path => false
@@ -86,7 +80,7 @@ class OpenidController < ApplicationController
 	protected
 		def openid_consumer
     		if @openid_consumer.nil?
-      			store = OpenID::Store::Memory.new
+      			store = OpenID::Store::Filesystem.new('./')
       			@openid_consumer = OpenID::Consumer.new(session, store)
     		end
     		return @openid_consumer
