@@ -80,7 +80,7 @@ class OpenidController < ApplicationController
 	protected
 		def openid_consumer
     		if @openid_consumer.nil?
-      			store = OpenID::Store::Filesystem.new('./')
+      			store = OpenID::Store::Filesystem.new('./tmp')
       			@openid_consumer = OpenID::Consumer.new(session, store)
     		end
     		return @openid_consumer
