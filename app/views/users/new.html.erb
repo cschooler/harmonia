@@ -1,0 +1,35 @@
+<h1>New user</h1>
+
+<%= form_tag(:controller => 'users', :action => 'create') do |f| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= label_tag :first_name %><br />
+    <%= text_field_tag :first_name, @user.first_name %>
+  </div>
+  <div class="field">
+    <%= label_tag :last_name %><br />
+    <%= text_field_tag :last_name, @user.last_name %>
+  </div>
+  <div class="field">
+    <%= label_tag :email %><br />
+    <%= text_field_tag :email, @user.email %>
+  </div>
+  <div class="field">
+    
+    <%= hidden_field_tag(:alias, @alias.alias) %>
+  </div>
+  <div class="actions">
+    <%= submit_tag %>
+  </div>
+<% end %>

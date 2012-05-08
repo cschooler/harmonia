@@ -1,5 +1,7 @@
 Harmonia::Application.routes.draw do
   resources :events
+  resources :users
+  resources :aliases
 
   match "consumer/index" => "consumer#index"
   match "consumer/start" => "consumer#start"

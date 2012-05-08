@@ -33,12 +33,12 @@ class OpenidController < ApplicationController
 		fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/first', 'first', true))
     fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/last', 'last', true))
     fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/contact/email', 'email', true))
-    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/friendly', 'friendly', true))
-    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson', 'namePerson', true))
-    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/person/gender', 'gender', true))
-    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/pref/language', 'language', true))
-    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/pref/timezone', 'timezone', true))
-    fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/media/image/default', 'image', true))
+    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson/friendly', 'friendly', true))
+    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/namePerson', 'namePerson', true))
+    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/person/gender', 'gender', true))
+    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/pref/language', 'language', true))
+    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/pref/timezone', 'timezone', true))
+    #fetch_request.add(OpenID::AX::AttrInfo.new('http://axschema.org/media/image/default', 'image', true))
 		oidreq.add_extension(fetch_request)
 		
 		return_to = url_for :action => 'complete', :only_path => false
@@ -67,14 +67,12 @@ class OpenidController < ApplicationController
         flash[:error] = "Verification failed: #{oidresp.message}"
       end
     when OpenID::Consumer::SUCCESS
-      flash[:success] = ("Verification of #{oidresp.display_identifier}"\
-                         " succeeded.")
 	  fetch_response = OpenID::AX::FetchResponse.from_success_response(oidresp)
     sreg_message = ''
-	  fetch_response.data.each {|k,v|
-			sreg_message << "<br/><b>#{k}</b>: #{v}"
-      }
-      flash[:sreg_results] = sreg_message
+    email = fetch_response.data['http://axschema.org/contact/email'];
+    first_name = fetch_response.data['http://axschema.org/namePerson/first']
+    last_name = fetch_response.data['http://axschema.org/namePerson/last']
+    openid_display = oidresp.display_identifier
           
     when OpenID::Consumer::SETUP_NEEDED
       flash[:alert] = "Immediate request failed - Setup Needed"
@@ -82,7 +80,7 @@ class OpenidController < ApplicationController
       flash[:alert] = "OpenID transaction cancelled."
     else
     end
-    redirect_to :action => 'view'
+    redirect_to :action => 'new', :controller => 'users', :email => email, :firstName => first_name, :lastName => last_name, :alias => openid_display
   end
 	
 	protected
