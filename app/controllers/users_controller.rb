@@ -3,6 +3,10 @@ class UsersController < ApplicationController
 		@user = User.find(params[:id])
 	end
 
+	def index
+		@users = User.all
+	end
+
 	def new
 		@user = User.new
 		# Need to add size check before grabbing index 0
@@ -14,10 +18,7 @@ class UsersController < ApplicationController
 	end
 
 	def create
-		@user = User.new
-		@user.email = params[:email]
-		@user.first_name = params[:first_name]
-		@user.last_name = params[:last_name]
+		@user = User.new(params[:user])
 		@user.aliases.build(:alias => params[:alias])
 
   		if @user.save
