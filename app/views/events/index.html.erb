@@ -5,7 +5,7 @@
 <% @events.each do | event |%>
 <li class="event">
 	<h2><%= link_to event.name, {:controller => "events", :action => "show", :id => event}, :class => 'title' %></h2>
-	<span><%= event.time %></span>
+	<span><%= event.start_time %></span> - <span><%= event.end_time %></span>
 	<p><%= event.description %></p>
 </li>
 <% end%>

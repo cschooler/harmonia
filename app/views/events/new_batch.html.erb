@@ -1,0 +1,23 @@
+<%= form_tag("/events/create_batch", :method => "get") do %>
+	<table>
+	<% @events.each.with_index do | event, index | %>
+		<tr>
+			<td><%= check_box_tag 'events[]', index, 'yes' %></td>
+			<td>
+				<%= event.name %>
+				<%= hidden_field_tag 'names[]', event.name %>
+			</td>
+			<td>
+				<%= event.start_time %>
+				<%= hidden_field_tag 'start_times[]', event.start_time %>
+			</td>
+			<td>
+				<%= event.end_time %>
+				<%= hidden_field_tag 'end_times[]', event.end_time %>
+			</td>
+		</tr>
+	<% end %>
+
+	</table>
+	<%= submit_tag %>
+<% end %>

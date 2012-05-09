@@ -1,15 +1,22 @@
 Harmonia::Application.routes.draw do
-  resources :events
+  
   resources :users
   resources :aliases
 
-  match "consumer/index" => "consumer#index"
-  match "consumer/start" => "consumer#start"
-  match "consumer/complete" => "consumer#complete"
   match "openid/view" => "openid#view"
   match "openid/create" => "openid#create"
   match "openid/complete" => "openid#complete"
   match "openid/index" => "openid#index"
+  match "events/index" => "events#index"
+  match "events" => "events#index"
+  match "events/new" => "events#new"
+  match "events/upload" => "events#upload"
+  match "events/create" => "events#create"
+  match "events/show" => "events#show"
+  match "events/import" => "events#import"
+  match "events/mappings" => "events#mappings"
+  match "events/new_batch" => "events#new_batch"
+  match "events/create_batch" => "events#create_batch"
   
   root :to => 'openid#index'
   # The priority is based upon order of creation:

@@ -1,0 +1,23 @@
+<%= @file %>
+<% form_tag :action => 'new_batch' do %>
+	<ul>
+	<% @fields.each_with_index.map do | field, index |%>
+		<li>
+			<h3><%= field %></h3>
+			What field am I?
+			<ul>
+				<li>
+					<label><input type="radio" name="begin" value="<%= index %>"/>Begin</label>
+				</li>
+				<li>
+					<label><input type="radio" name="end" value="<%= index %>"/>End</label>
+				</li>
+				<li>
+					<label><input type="radio" name="name" value="<%= index %>"/>Name</label>
+				</li>
+			</ul>
+		</li>
+	<% end %>
+	</ul>
+	<%= submit_tag %>
+<% end %>

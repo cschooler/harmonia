@@ -46,36 +46,36 @@ class OpenidController < ApplicationController
 	end
 	
 	def complete
-    # FIXME - url_for some action is not necessarily the current URL.
-    current_url = url_for(:action => 'complete', :only_path => false)
-    parameters = params.reject{|k,v|request.path_parameters[k]}
-    parameters.delete :controller
-    parameters.delete :action
-    oidresp = openid_consumer.complete(parameters, current_url)
-    case oidresp.status
-    when OpenID::Consumer::FAILURE
-      if oidresp.display_identifier
-        flash[:error] = ("Verification of #{oidresp.display_identifier}"\
+    	# FIXME - url_for some action is not necessarily the current URL.
+    	current_url = url_for(:action => 'complete', :only_path => false)
+    	parameters = params.reject{|k,v|request.path_parameters[k]}
+    	parameters.delete :controller
+    	parameters.delete :action
+    	oidresp = openid_consumer.complete(parameters, current_url)
+    	case oidresp.status
+    		when OpenID::Consumer::FAILURE
+      			if oidresp.display_identifier
+        			flash[:error] = ("Verification of #{oidresp.display_identifier}"\
                          " failed: #{oidresp.message}")
-      else
-        flash[:error] = "Verification failed: #{oidresp.message}"
-      end
-    when OpenID::Consumer::SUCCESS
-	  fetch_response = OpenID::AX::FetchResponse.from_success_response(oidresp)
-    sreg_message = ''
-    email = fetch_response.data['http://axschema.org/contact/email'];
-    first_name = fetch_response.data['http://axschema.org/namePerson/first']
-    last_name = fetch_response.data['http://axschema.org/namePerson/last']
-    openid_display = oidresp.display_identifier
+      			else
+        			flash[:error] = "Verification failed: #{oidresp.message}"
+      			end
+    		when OpenID::Consumer::SUCCESS
+	  			fetch_response = OpenID::AX::FetchResponse.from_success_response(oidresp)
+    			sreg_message = ''
+    			email = fetch_response.data['http://axschema.org/contact/email'];
+    			first_name = fetch_response.data['http://axschema.org/namePerson/first']
+    			last_name = fetch_response.data['http://axschema.org/namePerson/last']
+    			openid_display = oidresp.display_identifier
           
-    when OpenID::Consumer::SETUP_NEEDED
-      flash[:alert] = "Immediate request failed - Setup Needed"
-    when OpenID::Consumer::CANCEL
-      flash[:alert] = "OpenID transaction cancelled."
-    else
-    end
-    redirect_to :action => 'new', :controller => 'users', :email => email, :firstName => first_name, :lastName => last_name, :alias => openid_display
-  end
+    		when OpenID::Consumer::SETUP_NEEDED
+      			flash[:alert] = "Immediate request failed - Setup Needed"
+    		when OpenID::Consumer::CANCEL
+      			flash[:alert] = "OpenID transaction cancelled."
+    		else
+    		end
+    		redirect_to :action => 'new', :controller => 'users', :email => email, :firstName => first_name, :lastName => last_name, :alias => openid_display
+  	end
 	
 	protected
 		def openid_consumer

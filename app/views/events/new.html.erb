@@ -11,8 +11,12 @@
 		<%= f.text_field :description %>
 	</div>
 	<div>
-		<%= f.label :time %><br/>
-		<%= datetime_select :event, :time %>
+		<%= f.label :start_time %><br/>
+		<%= datetime_select :event, :start_time %>
+	</div>
+	<div>
+		<%= f.label :end_time %><br/>
+		<%= datetime_select :event, :end_time %>
 	</div>
 	<div class="actions">
 		<%= f.submit "Create" %>

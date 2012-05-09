@@ -9,7 +9,6 @@ class UsersController < ApplicationController
 
 	def new
 		@user = User.new
-		# Need to add size check before grabbing index 0
 		if(!params[:email].nil?)
 			@user.email =  params[:email][0]
 		end
