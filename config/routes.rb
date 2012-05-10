@@ -7,6 +7,7 @@ Harmonia::Application.routes.draw do
   match "openid/create" => "openid#create"
   match "openid/complete" => "openid#complete"
   match "openid/index" => "openid#index"
+  match "openid/logout" => "openid#logout"
   match "events/index" => "events#index"
   match "events" => "events#index"
   match "events/new" => "events#new"

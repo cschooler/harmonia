@@ -7,6 +7,9 @@ require 'openid/extensions/ax'
 require 'openid/store/filesystem'
 
 class OpenidController < ApplicationController
+	skip_before_filter :require_login, :only => [:index, :new, :create, :complete]
+
+
 	def index
 	end
 
@@ -67,14 +70,25 @@ class OpenidController < ApplicationController
     			first_name = fetch_response.data['http://axschema.org/namePerson/first']
     			last_name = fetch_response.data['http://axschema.org/namePerson/last']
     			openid_display = oidresp.display_identifier
-          
+          		a = Alias.where('alias = ?', openid_display)
+          		if a.any?
+    				session[:current_user_id] = a.to_a()[0].user_id
+    				redirect_to :controller => 'users', :action => 'show', :id => session[:current_user_id]
+    				return
+    			end
     		when OpenID::Consumer::SETUP_NEEDED
       			flash[:alert] = "Immediate request failed - Setup Needed"
     		when OpenID::Consumer::CANCEL
       			flash[:alert] = "OpenID transaction cancelled."
     		else
     		end
+
     		redirect_to :action => 'new', :controller => 'users', :email => email, :firstName => first_name, :lastName => last_name, :alias => openid_display
+  	end
+
+  	def logout
+  		session[:current_user_id] = nil
+  		redirect_to :controller => 'openid', :action => 'index'
   	end
 	
 	protected
