@@ -8,6 +8,7 @@ gem 'rails'
 gem 'sqlite3'
 gem 'google-api-client'
 gem 'ruby-openid'
+gem 'koala'
 
 # Use unicorn as the web server
 # gem 'unicorn'

@@ -5,10 +5,10 @@ require 'openid/extensions/sreg'
 require 'openid/extensions/pape'
 require 'openid/extensions/ax'
 require 'openid/store/filesystem'
+require 'koala'
 
 class OpenidController < ApplicationController
-	skip_before_filter :require_login, :only => [:index, :new, :create, :complete]
-
+	skip_before_filter :require_login, :only => [:index, :new, :create, :complete, :create_facebook, :complete_facebook]
 
 	def index
 	end
@@ -16,6 +16,33 @@ class OpenidController < ApplicationController
 	def view
 		#TODO: show a form requesting the user's OpenID
 	end
+
+  def create_facebook
+    @oauth = Koala::Facebook::OAuth.new('{app_id}', '{app_secret}', url_for(:controller => 'openid', :action => 'complete_facebook'))
+    redirect_to @oauth.url_for_oauth_code
+  end
+
+  def complete_facebook
+    @oauth = Koala::Facebook::OAuth.new('{app_id}', '{app_secret}', url_for(:controller => 'openid', :action => 'complete_facebook'))
+    code = params[:code]
+    session[:access_token] = @oauth.get_access_token(code)
+    @token = session[:access_token]
+
+    @graph = Koala::Facebook::API.new(@token)
+    @me = @graph.get_object("me")
+    first_name = @me['first_name']
+    last_name = @me['last_name']
+    openid_display = @me['link']
+
+    a = Alias.where('alias = ?', openid_display)
+    if a.any?
+        session[:current_user_id] = a.to_a()[0].user_id
+        redirect_to :controller => 'users', :action => 'show', :id => session[:current_user_id]
+        return
+    end
+
+    redirect_to :action => 'new', :controller => 'users', :firstName => first_name, :lastName => last_name, :alias => openid_display
+  end
 	
 	def create
 		begin
@@ -66,9 +93,15 @@ class OpenidController < ApplicationController
     		when OpenID::Consumer::SUCCESS
 	  			fetch_response = OpenID::AX::FetchResponse.from_success_response(oidresp)
     			sreg_message = ''
-    			email = fetch_response.data['http://axschema.org/contact/email'];
-    			first_name = fetch_response.data['http://axschema.org/namePerson/first']
-    			last_name = fetch_response.data['http://axschema.org/namePerson/last']
+          if(!fetch_response.data['http://axschema.org/contact/email'].nil?)
+    			 email = fetch_response.data['http://axschema.org/contact/email'][0];
+          end
+          if(!fetch_response.data['http://axschema.org/namePerson/first'].nil?)
+    			 first_name = fetch_response.data['http://axschema.org/namePerson/first'][0]
+          end
+          if(!fetch_response.data['http://axschema.org/namePerson/last'].nil?)
+    			 last_name = fetch_response.data['http://axschema.org/namePerson/last'][0]
+          end
     			openid_display = oidresp.display_identifier
           		a = Alias.where('alias = ?', openid_display)
           		if a.any?

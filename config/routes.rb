@@ -8,6 +8,8 @@ Harmonia::Application.routes.draw do
   match "openid/complete" => "openid#complete"
   match "openid/index" => "openid#index"
   match "openid/logout" => "openid#logout"
+  match "openid/create_facebook" => "openid#create_facebook"
+  match "openid/complete_facebook" => "openid#complete_facebook"
   match "events/index" => "events#index"
   match "events" => "events#index"
   match "events/new" => "events#new"
